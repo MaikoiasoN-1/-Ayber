@@ -3,300 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Ti</title>
+    <title>Mensaje</title>
     <style>
-        :root {
-            --color-bg: #f7ebe8;
-            --color-envelope: #e07a5f;
-            --color-envelope-inside: #f4a261;
-            --color-letter: #fffdf9;
-            --color-text: #3d405b;
-            --color-heart: #e63946;
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--color-bg);
-            font-family: 'Georgia', serif;
+            background-color: #050505;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
-            perspective: 1000px;
+            font-family: 'Arial Black', Impact, sans-serif;
         }
 
-        /* Texto de ayuda sutil arriba del sobre */
-        .indicador {
-            color: var(--color-text);
-            font-size: 1.1rem;
-            font-style: italic;
-            margin-bottom: 25px;
-            animation: palpitar 2s infinite;
-            z-index: 20;
-            pointer-events: none;
-        }
-
-        @keyframes palpitar {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
-
-        /* Fondo de pétalos/detalles flotantes originales */
-        .decorations {
-            position: absolute;
+        .container {
+            text-align: center;
             width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 1;
+            padding: 20px;
         }
 
-        .particle {
-            position: absolute;
-            background: rgba(230, 57, 70, 0.2);
-            border-radius: 50%;
-            animation: floatUp 6s linear infinite;
+        .giant-text {
+            font-size: 14vw; /* Escala automáticamente con el ancho de la pantalla */
+            color: #ff2a2a;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 0.9;
+            user-select: none;
+            text-shadow: 0 0 20px rgba(255, 42, 42, 0.6);
+            animation: pulse 1.5s infinite alternate ease-in-out;
         }
 
-        /* Contenedor Principal del Sobre Original */
-        .envelope-wrapper {
-            position: relative;
-            width: 350px;
-            height: 230px;
-            background-color: var(--color-envelope-inside);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            cursor: pointer;
-            z-index: 10;
-            transition: transform 0.5s ease;
-        }
-
-        .envelope-wrapper:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Capas del sobre */
-        .envelope-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 0 175px 115px 175px;
-            border-color: transparent transparent var(--color-envelope) transparent;
-            z-index: 3;
-        }
-
-        .envelope-wrapper::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 115px 175px 115px 175px;
-            border-color: transparent var(--color-envelope) var(--color-envelope) var(--color-envelope);
-            z-index: 4;
-        }
-
-        /* Solapa superior */
-        .flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 115px 175px 0 175px;
-            border-color: var(--color-envelope) transparent transparent transparent;
-            transform-origin: top;
-            transition: transform 0.4s ease 0.2s, z-index 0.2s ease 0.2s;
-            z-index: 5;
-        }
-
-        /* La Carta */
-        .letter {
-            position: absolute;
-            bottom: 10px;
-            left: 25px;
-            width: 300px;
-            height: 200px;
-            background-color: var(--color-letter);
-            padding: 25px 20px;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.6s ease, z-index 0.1s ease, height 0.6s ease;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Centrado vertical */
-            align-items: center;    /* Centrado horizontal */
-        }
-
-        .letter-text {
-            color: var(--color-text);
-            font-size: 1.15rem;
-            line-height: 1.6;
-            text-align: center;
-            font-style: italic;
-            margin-bottom: 15px;
-        }
-
-        /* Firma al medio */
-        .letter-author {
-            text-align: center;
-            font-size: 1rem;
-            font-weight: bold;
-            color: var(--color-heart);
-            letter-spacing: 0.5px;
-        }
-
-        /* Corazón para cerrar/abrir */
-        .heart-seal {
-            position: absolute;
-            top: 100px;
-            left: 160px;
-            width: 30px;
-            height: 30px;
-            background-color: var(--color-heart);
-            transform: rotate(-45deg);
-            z-index: 6;
-            transition: transform 0.4s ease 0.2s, opacity 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .heart-seal::before,
-        .heart-seal::after {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: var(--color-heart);
-            border-radius: 50%;
-        }
-
-        .heart-seal::before { top: -15px; left: 0; }
-        .heart-seal::after { left: 15px; top: 0; }
-
-        /* Estado Abierto */
-        .envelope-wrapper.open .flap {
-            transform: rotateX(180deg);
-            z-index: 1;
-            transition: transform 0.4s ease, z-index 0.2s ease 0.2s;
-        }
-
-        .envelope-wrapper.open .heart-seal {
-            opacity: 0;
-            transform: translateY(-20px) rotate(-45deg) scale(0);
-        }
-
-        .envelope-wrapper.open .letter {
-            transform: translateY(-130px);
-            z-index: 4;
-            height: 250px;
-            transition: transform 0.6s ease 0.3s, z-index 0.1s ease 0.3s, height 0.6s ease 0.3s;
-        }
-
-        /* Animación de fondo */
-        @keyframes floatUp {
+        /* Efecto de parpadeo e impacto visual */
+        @keyframes pulse {
             0% {
-                transform: translateY(100vh) translateX(0) scale(0.5);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.6;
+                transform: scale(1);
+                text-shadow: 0 0 20px rgba(255, 42, 42, 0.6);
             }
             100% {
-                transform: translateY(-10vh) translateX(50px) scale(1.2);
-                opacity: 0;
+                transform: scale(1.03);
+                text-shadow: 0 0 40px rgba(255, 42, 42, 0.9), 0 0 70px rgba(255, 0, 0, 0.5);
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Indicador arriba del sobre -->
-    <div class="indicador" id="texto-ayuda">Haz clic en el sobre para abrirlo... 💌</div>
-
-    <!-- Fondo de pétalos flotantes original -->
-    <div class="decorations" id="particles"></div>
-
-    <!-- Sobre original -->
-    <div class="envelope-wrapper" id="envelope">
-        <div class="flap"></div>
-        <div class="heart-seal"></div>
-        <div class="letter">
-            <div class="letter-text">
-                "Podría esperarte toda mi vida... <br> pero, ¿volverás? 🥺"
-            </div>
-            <div class="letter-author">Att: Ayber</div>
-        </div>
+    <div class="container">
+        <h1 class="giant-text">VT A LA M</h1>
     </div>
 
-    <!-- Etiqueta de audio nativa (Pon tu archivo 'musica.mp3' en la misma carpeta) -->
-    <audio id="bg-music" src="musicas.mp3" loop></audio>
-
-    <script>
-        const envelope = document.getElementById('envelope');
-        const ayuda = document.getElementById('texto-ayuda');
-        const music = document.getElementById('bg-music');
-
-        // Control de apertura, ocultar texto y reproducir audio real al hacer click
-        envelope.addEventListener('click', () => {
-            envelope.classList.toggle('open');
-            
-            if (envelope.classList.contains('open')) {
-                // Oculta el texto de ayuda al abrir
-                ayuda.style.display = 'none';
-                // Lanza la canción de Iván Cornejo
-                music.play().catch(error => {
-                    console.log("El navegador bloqueó el inicio automático");
-                });
-            } else {
-                music.pause();
-            }
-        });
-
-        // Generador de los detalles flotantes originales intactos
-        const particlesContainer = document.getElementById('particles');
-        const colors = ['#e63946', '#f4a261', '#ffb5a7'];
-
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            const size = Math.random() * 15 + 5;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${Math.random() * 100}vw`;
-            
-            particle.style.animationDuration = `${Math.random() * 4 + 4}s`;
-            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.opacity = Math.random() * 0.4;
-
-            if (size > 10) {
-                particle.style.borderRadius = '50% 0 50% 50%';
-                particle.style.transform = `rotate(${Math.random() * 360}deg)`;
-            }
-
-            particlesContainer.appendChild(particle);
-
-            setTimeout(() => {
-                particle.remove();
-            }, 8000);
-        }
-
-        setInterval(createParticle, 300);
-    </script>
 </body>
 </html>
